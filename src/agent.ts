@@ -1,10 +1,7 @@
 // src/agent.ts
-import type { Invoice, HumanReview } from "./types.ts";
-import dotenv from "dotenv";
-import process from "process";
-import { parseAIJson } from "../utlis/parseJson.ts";
-
-dotenv.config(); // <-- THIS IS THE KEY FIX
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import 'dotenv/config';
+import type { Invoice, HumanReview } from './types.ts';
 
 interface AISuggestion {
   field: string;
@@ -18,6 +15,17 @@ interface AIResponse {
   reasoning: string;
 }
 
+// Initialize Gemini
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+
+const model = genAI.getGenerativeModel({
+  model: "gemini-2.5-flash", // Fast, cheap, great for JSON
+  generationConfig: {
+    responseMimeType: "application/json", // Forces valid JSON output
+    temperature: 0.3,
+  },
+});
+
 export async function getAISuggestions(
   invoice: Invoice,
   pastReviews: HumanReview[],
@@ -28,80 +36,89 @@ export async function getAISuggestions(
     .slice(-10)
     .map(
       (r) =>
-        `Invoice ${r.invoiceId} (${r.vendor}): Corrections → ${JSON.stringify(
-          r.corrections
-        )}`
+        `Invoice ${r.invoiceId} (${r.vendor}): Corrections → ${JSON.stringify(r.corrections)}`
     )
-    .join("\n");
+    .join("\n") || "No past corrections — be very cautious, confidence ≤ 0.75";
 
   const prompt = `
-    You are a cautious AI agent. You ONLY give high confidence (>0.85) when the pattern exactly matches a past human correction.
+You are a cautious, vendor-aware invoice correction agent.
 
-    If no past human correction exists for this vendor, be conservative — confidence < 0.8
+CORE RULES:
+- If a field EXACTLY matches a past human-approved correction for this vendor → high confidence (≥0.9)
+- If new pattern or first time for vendor → low confidence (≤0.75) → requires human review
+- Never invent values. Use only rawText and reference data.
+- Learning is per-vendor.
 
-    Past human corrections:
-    ${examples || "NONE — be very cautious, low confidence"}
+PAST HUMAN CORRECTIONS (vendor-specific):
+${examples}
 
-    Current invoice:
-    Vendor: ${invoice.vendor}
-    ID: ${invoice.invoiceId}
-    Raw text: """${invoice.rawText}"""
-    Extracted fields: ${JSON.stringify(invoice.fields, null, 2)}
+CURRENT INVOICE:
+Vendor: ${invoice.vendor}
+Invoice ID: ${invoice.invoiceId}
 
-    Reference data:
-    POs: ${JSON.stringify(pos.slice(0, 5))}
-    DNs: ${JSON.stringify(dns.slice(0, 5))}
+Raw text:
+"""${invoice.rawText}"""
 
-    Return ONLY valid JSON with this structure:
+Extracted fields:
+${JSON.stringify(invoice.fields, null, 2)}
+
+REFERENCE DATA:
+Purchase Orders: ${JSON.stringify(pos)}
+Delivery Notes: ${JSON.stringify(dns)}
+
+DETECT:
+- serviceDate from "Leistungsdatum"
+- poNumber by matching line items to POs (single match = high confidence)
+- VAT recalc if "MwSt. inkl." or "incl. VAT"
+- currency from rawText if missing
+- SKU "FREIGHT" for "Seefracht", "Shipping", "Transport"
+- discountTerms from "Skonto" text
+- flag duplicates ("duplicate", "erneute")
+
+Return ONLY valid JSON:
+{
+  "suggestions": [
     {
-      "suggestions": [{ "field": "string", "value": "any", "reason": "string", "confidence": number }],
-      "reasoning": "string"
+      "field": "string",
+      "value": any,
+      "reason": "Clear reason + mention if learned from past",
+      "confidence": number
     }
+  ],
+  "reasoning": "Explain confidence and if human review needed"
+}
 `;
 
   try {
-    const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
 
-    if (!OPENROUTER_API_KEY) {
-      throw new Error(
-        "OPENROUTER_API_KEY not found. Check .env file and dotenv.config()."
-      );
-    }
+    // Clean possible markdown
+    const jsonText = text.replace(/```json\n?|```/g, '').trim();
 
-    const response = await fetch(
-      "https://openrouter.ai/api/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${OPENROUTER_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "openai/gpt-oss-20b:free",
-          messages: [{ role: "user", content: prompt }],
-        }),
-      }
-    );
+    const parsed = JSON.parse(jsonText);
 
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${await response.text()}`);
-    }
+    // Ensure suggestions is array and has required fields
+    const safeSuggestions = (parsed.suggestions || []).map((s: any) => ({
+      field: s.field || "",
+      value: s.value,
+      reason: s.reason || "AI suggestion",
+      confidence: typeof s.confidence === 'number' ? s.confidence : 0.7
+    }));
 
-    const data = await response.json();
-    return parseAIJson<AIResponse>(data.choices[0].message.content);
+    return {
+      suggestions: safeSuggestions,
+      reasoning: parsed.reasoning || "Gemini analysis completed."
+    };
   } catch (error) {
-    console.error("Error fetching AI suggestions:", error);
-    return { suggestions: [], reasoning: "AI suggestion failed." };
+    console.error("Gemini API error:", error);
+    return {
+      suggestions: [],
+      reasoning: "AI unavailable — escalating to human review."
+    };
   }
 }
 
-let exampleInvoice: Invoice = {
-  invoiceId: "INV-EX-001",
-  vendor: "Supplier GmbH",
-  fields: { serviceDate: null, grossTotal: 1200 },
-  confidence: 0.75,
-  rawText: "Rechnung vom 15.03.2024 ... Leistungsdatum fehlt ...",
-};
-getAISuggestions(exampleInvoice, [], [], []).then((res) => {
-  console.log("AI Suggestions:", res);
-});
+
+// t
