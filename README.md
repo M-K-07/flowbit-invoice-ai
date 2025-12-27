@@ -61,7 +61,7 @@ The system operates on a **Recall → Analyze → Decide → Learn** loop.
 2.  Configure Environment:
     Create a `.env` file in the root directory:
     ```env
-    OPENROUTER_API_KEY=your_key_here
+    GEMINI_API_KEY=your_key_here
     ```
 
 ### Running the Agent
@@ -79,5 +79,5 @@ npx ts-node src/main.ts
 
 *   **Runtime:** Node.js / TypeScript
 *   **Database:** SQLite (`better-sqlite3`)
-*   **AI Provider:** OpenRouter API
+*   **AI Provider:** GEMINI API
 *   **CLI:** `prompt-sync` for interactive user feedback
