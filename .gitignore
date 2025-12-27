@@ -24,5 +24,5 @@ Thumbs.db
 .idea/
 
 # Application output
-output.json
-learned_memory.json
+# output.json
+# learned_memory.json

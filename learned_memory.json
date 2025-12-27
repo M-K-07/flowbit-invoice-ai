@@ -1,0 +1,161 @@
+[
+  {
+    "invoiceId": "INV-A-001",
+    "vendor": "Supplier GmbH",
+    "corrections": [
+      {
+        "field": "serviceDate",
+        "from": null,
+        "to": "01.01.2024",
+        "reason": "Human approved AI suggestion"
+      }
+    ],
+    "finalDecision": "approved"
+  },
+  {
+    "invoiceId": "INV-A-003",
+    "vendor": "Supplier GmbH",
+    "corrections": [
+      {
+        "field": "serviceDate",
+        "from": null,
+        "to": "20.01.2024",
+        "reason": "Human approved AI suggestion"
+      },
+      {
+        "field": "poNumber",
+        "from": null,
+        "to": "PO-A-051",
+        "reason": "Human approved AI suggestion"
+      }
+    ],
+    "finalDecision": "approved"
+  },
+  {
+    "invoiceId": "INV-A-004",
+    "vendor": "Supplier GmbH",
+    "corrections": [
+      {
+        "field": "serviceDate",
+        "from": null,
+        "to": "20.01.2024",
+        "reason": "Human approved AI suggestion"
+      },
+      {
+        "field": "poNumber",
+        "from": null,
+        "to": "PO-A-051",
+        "reason": "Human approved AI suggestion"
+      },
+      {
+        "field": "invoiceStatus",
+        "from": null,
+        "to": "possible_duplicate",
+        "reason": "Human approved AI suggestion"
+      }
+    ],
+    "finalDecision": "approved"
+  },
+  {
+    "invoiceId": "INV-B-001",
+    "vendor": "Parts AG",
+    "corrections": [
+      {
+        "field": "grossTotal",
+        "from": null,
+        "to": 2380,
+        "reason": "Human approved AI suggestion"
+      },
+      {
+        "field": "taxTotal",
+        "from": null,
+        "to": 380,
+        "reason": "Human approved AI suggestion"
+      }
+    ],
+    "finalDecision": "approved"
+  },
+  {
+    "invoiceId": "INV-B-002",
+    "vendor": "Parts AG",
+    "corrections": [
+      {
+        "field": "grossTotal",
+        "from": null,
+        "to": 1500,
+        "reason": "Human approved AI suggestion"
+      },
+      {
+        "field": "netTotal",
+        "from": null,
+        "to": 1260.5,
+        "reason": "Human approved AI suggestion"
+      },
+      {
+        "field": "taxTotal",
+        "from": null,
+        "to": 239.5,
+        "reason": "Human approved AI suggestion"
+      }
+    ],
+    "finalDecision": "approved"
+  },
+  {
+    "invoiceId": "INV-B-003",
+    "vendor": "Parts AG",
+    "corrections": [
+      {
+        "field": "currency",
+        "from": null,
+        "to": "EUR",
+        "reason": "Human approved AI suggestion"
+      }
+    ],
+    "finalDecision": "approved"
+  },
+  {
+    "invoiceId": "INV-B-004",
+    "vendor": "Parts AG",
+    "corrections": [
+      {
+        "field": "invoiceStatus",
+        "from": null,
+        "to": "possible_duplicate",
+        "reason": "Human approved AI suggestion"
+      }
+    ],
+    "finalDecision": "approved"
+  },
+  {
+    "invoiceId": "INV-C-001",
+    "vendor": "Freight & Co",
+    "corrections": [
+      {
+        "field": "discountTerms",
+        "from": null,
+        "to": "2% Skonto if paid within 10 days",
+        "reason": "Human approved AI suggestion"
+      },
+      {
+        "field": "lineItems[0].sku",
+        "from": null,
+        "to": "FREIGHT",
+        "reason": "Human approved AI suggestion"
+      }
+    ],
+    "finalDecision": "approved"
+  },
+  {
+    "invoiceId": "INV-C-004",
+    "vendor": "Freight & Co",
+    "corrections": [
+      {
+        "field": "lineItems[0].sku",
+        "from": null,
+        "to": "FREIGHT",
+        "reason": "Human approved AI suggestion"
+      }
+    ],
+    "finalDecision": "approved"
+  }
+]

@@ -1,0 +1,601 @@
+[
+  {
+    "normalizedInvoice": {
+      "invoiceId": "INV-A-001",
+      "vendor": "Supplier GmbH",
+      "fields": {
+        "invoiceNumber": "INV-2024-001",
+        "invoiceDate": "12.01.2024",
+        "serviceDate": null,
+        "currency": "EUR",
+        "poNumber": "PO-A-050",
+        "netTotal": 2500,
+        "taxRate": 0.19,
+        "taxTotal": 475,
+        "grossTotal": 2975,
+        "lineItems": [
+          {
+            "sku": "WIDGET-001",
+            "description": "Widget",
+            "qty": 100,
+            "unitPrice": 25
+          }
+        ]
+      },
+      "confidence": 0.78,
+      "rawText": "Rechnungsnr: INV-2024-001\nLeistungsdatum: 01.01.2024\nBestellnr: PO-A-050\n..."
+    },
+    "proposedCorrections": [
+      "serviceDate → \"01.01.2024\" (conf: 0.75, Extracted 'Leistungsdatum' from raw text. This is a new pattern for this vendor.)"
+    ],
+    "requiresHumanReview": true,
+    "reasoning": "No past human-approved corrections exist for 'Supplier GmbH'. Therefore, any new pattern or first-time extraction for this vendor must have a confidence of 0.75 or less and requires human review. The 'serviceDate' was extracted directly from the 'Leistungsdatum' in the raw text, which was previously null. | First time processing invoice from this vendor → requires human review to establish reliable learned pattern.",
+    "confidenceScore": 0.77,
+    "memoryUpdates": [
+      "Learned 1 correction(s) for INV-A-001"
+    ],
+    "auditTrail": [
+      {
+        "step": "recall",
+        "timestamp": "2025-12-27T15:05:52.150Z",
+        "details": "Loaded past human reviews for learned memory"
+      },
+      {
+        "step": "decide",
+        "timestamp": "2025-12-27T15:05:59.328Z",
+        "details": "Vendor memory exists: false | Final confidence: 0.77 | Human review: true"
+      }
+    ]
+  },
+  {
+    "normalizedInvoice": {
+      "invoiceId": "INV-A-002",
+      "vendor": "Supplier GmbH",
+      "fields": {
+        "invoiceNumber": "INV-2024-002",
+        "invoiceDate": "18.01.2024",
+        "serviceDate": "15.01.2024",
+        "currency": "EUR",
+        "poNumber": "PO-A-050",
+        "netTotal": 2375,
+        "taxRate": 0.19,
+        "taxTotal": 451.25,
+        "grossTotal": 2826.25,
+        "lineItems": [
+          {
+            "sku": "WIDGET-001",
+            "description": "Widget",
+            "qty": 95,
+            "unitPrice": 25
+          }
+        ]
+      },
+      "confidence": 0.72,
+      "rawText": "Rechnungsnr: INV-2024-002\nLeistungsdatum: 15.01.2024\nBestellnr: PO-A-050\nHinweis: Teillieferung\n..."
+    },
+    "proposedCorrections": [
+      "serviceDate → \"15.01.2024\" (conf: 0.90, Extracted from 'Leistungsdatum' in raw text. This correction pattern (populating a null serviceDate from raw text) matches a past human-approved correction for this vendor (INV-A-001).)"
+    ],
+    "requiresHumanReview": false,
+    "reasoning": "The 'serviceDate' field was null in the extraction but clearly present as 'Leistungsdatum: 15.01.2024' in the raw text. This scenario (correcting a null serviceDate from raw text) is a direct match to a previously human-approved correction for 'Supplier GmbH' on invoice INV-A-001, hence the high confidence. | Learned pattern from past human corrections for this vendor + high confidence → auto-approved.",
+    "confidenceScore": 0.81,
+    "memoryUpdates": [],
+    "auditTrail": [
+      {
+        "step": "recall",
+        "timestamp": "2025-12-27T15:06:32.649Z",
+        "details": "Loaded past human reviews for learned memory"
+      },
+      {
+        "step": "apply",
+        "timestamp": "2025-12-27T15:06:39.712Z",
+        "details": "Auto-applied serviceDate = \"15.01.2024\" (conf 0.90)"
+      },
+      {
+        "step": "decide",
+        "timestamp": "2025-12-27T15:06:39.712Z",
+        "details": "Vendor memory exists: true | Final confidence: 0.81 | Human review: false"
+      }
+    ]
+  },
+  {
+    "normalizedInvoice": {
+      "invoiceId": "INV-A-003",
+      "vendor": "Supplier GmbH",
+      "fields": {
+        "invoiceNumber": "INV-2024-003",
+        "invoiceDate": "25.01.2024",
+        "serviceDate": null,
+        "currency": "EUR",
+        "poNumber": null,
+        "netTotal": 500,
+        "taxRate": 0.19,
+        "taxTotal": 95,
+        "grossTotal": 595,
+        "lineItems": [
+          {
+            "sku": "WIDGET-002",
+            "description": "Widget Pro",
+            "qty": 20,
+            "unitPrice": 25
+          }
+        ]
+      },
+      "confidence": 0.69,
+      "rawText": "Rechnungsnr: INV-2024-003\nLeistungsdatum: 20.01.2024\nBestellung(keine Angabe)\nReferenz: Lieferung Januar\n..."
+    },
+    "proposedCorrections": [
+      "serviceDate → \"20.01.2024\" (conf: 0.70, Extracted 'Leistungsdatum' from raw text. While the action of correcting a null serviceDate is similar to a past human-approved correction for this vendor, the specific date value is new.)",
+      "poNumber → \"PO-A-051\" (conf: 0.75, Identified a single matching Purchase Order (PO-A-051) based on line items (SKU: WIDGET-002, Qty: 20, Unit Price: 25). This is the first time a poNumber correction is suggested for this vendor.)"
+    ],
+    "requiresHumanReview": true,
+    "reasoning": "Confidence for 'serviceDate' is set to 0.7 because although the field and 'from' value (null) match a past correction for 'Supplier GmbH', the 'to' value ('20.01.2024') does not exactly match the past correction's 'to' value ('01.01.2024'). Therefore, it does not meet the 'EXACTLY matches' criteria for high confidence. Confidence for 'poNumber' is set to 0.75 because it is a new pattern and the first time this field is being suggested for correction for 'Supplier GmbH'. Both suggestions require human review due to their confidence being ≤0.75. | Confidence not sufficient yet → requires human verification.",
+    "confidenceScore": 0.72,
+    "memoryUpdates": [
+      "Learned 2 correction(s) for INV-A-003"
+    ],
+    "auditTrail": [
+      {
+        "step": "recall",
+        "timestamp": "2025-12-27T15:06:39.714Z",
+        "details": "Loaded past human reviews for learned memory"
+      },
+      {
+        "step": "decide",
+        "timestamp": "2025-12-27T15:06:51.475Z",
+        "details": "Vendor memory exists: true | Final confidence: 0.72 | Human review: true"
+      }
+    ]
+  },
+  {
+    "normalizedInvoice": {
+      "invoiceId": "INV-A-004",
+      "vendor": "Supplier GmbH",
+      "fields": {
+        "invoiceNumber": "INV-2024-003",
+        "invoiceDate": "26.01.2024",
+        "serviceDate": "20.01.2024",
+        "currency": "EUR",
+        "poNumber": "PO-A-051",
+        "netTotal": 500,
+        "taxRate": 0.19,
+        "taxTotal": 95,
+        "grossTotal": 595,
+        "lineItems": [
+          {
+            "sku": "WIDGET-002",
+            "description": "Widget Pro",
+            "qty": 20,
+            "unitPrice": 25
+          }
+        ]
+      },
+      "confidence": 0.63,
+      "rawText": "Rechnungsnr: INV-2024-003\nLeistungsdatum: 20.01.2024\nHinweis: erneute Zusendung\n..."
+    },
+    "proposedCorrections": [
+      "serviceDate → \"20.01.2024\" (conf: 0.95, Extracted 'Leistungsdatum: 20.01.2024' from raw text. This value exactly matches a past human-approved correction for 'serviceDate' for Supplier GmbH (Invoice INV-A-003).)",
+      "poNumber → \"PO-A-051\" (conf: 0.95, Identified Purchase Order 'PO-A-051' from reference data by matching line items (SKU 'WIDGET-002', Qty 20, Unit Price 25). This value exactly matches a past human-approved correction for 'poNumber' for Supplier GmbH (Invoice INV-A-003).)",
+      "invoiceStatus → \"possible_duplicate\" (conf: 0.70, Detected 'erneute Zusendung' in the raw text, indicating a potential duplicate or re-sent invoice. This is a new pattern detection for Supplier GmbH.)"
+    ],
+    "requiresHumanReview": true,
+    "reasoning": "Confidence for 'serviceDate' and 'poNumber' is high (0.95) because the suggested values were found in the raw text/reference data and exactly match previous human-approved corrections for Supplier GmbH. The 'invoiceStatus' suggestion for 'possible_duplicate' has low confidence (0.7) as it's a new pattern detection for this vendor and requires human review. | Confidence not sufficient yet → requires human verification.",
+    "confidenceScore": 0.78,
+    "memoryUpdates": [
+      "Learned 3 correction(s) for INV-A-004"
+    ],
+    "auditTrail": [
+      {
+        "step": "recall",
+        "timestamp": "2025-12-27T15:07:49.506Z",
+        "details": "Loaded past human reviews for learned memory"
+      },
+      {
+        "step": "apply",
+        "timestamp": "2025-12-27T15:07:56.958Z",
+        "details": "Auto-applied serviceDate = \"20.01.2024\" (conf 0.95)"
+      },
+      {
+        "step": "apply",
+        "timestamp": "2025-12-27T15:07:56.958Z",
+        "details": "Auto-applied poNumber = \"PO-A-051\" (conf 0.95)"
+      },
+      {
+        "step": "decide",
+        "timestamp": "2025-12-27T15:07:56.958Z",
+        "details": "Vendor memory exists: true | Final confidence: 0.78 | Human review: true"
+      }
+    ]
+  },
+  {
+    "normalizedInvoice": {
+      "invoiceId": "INV-B-001",
+      "vendor": "Parts AG",
+      "fields": {
+        "invoiceNumber": "PA-7781",
+        "invoiceDate": "05-02-2024",
+        "currency": "EUR",
+        "poNumber": "PO-B-110",
+        "netTotal": 2000,
+        "taxRate": 0.19,
+        "taxTotal": 400,
+        "grossTotal": 2400,
+        "lineItems": [
+          {
+            "sku": "BOLT-99",
+            "description": "Bolts",
+            "qty": 200,
+            "unitPrice": 10
+          }
+        ]
+      },
+      "confidence": 0.74,
+      "rawText": "Invoice No: PA-7781\nPO: PO-B-110\nPrices incl. VAT (MwSt. inkl.)\nTotal: 2380.00 EUR\n..."
+    },
+    "proposedCorrections": [
+      "grossTotal → 2380 (conf: 0.70, Recalculated from raw text 'Total: 2380.00 EUR' and 'Prices incl. VAT' instruction.)",
+      "taxTotal → 380 (conf: 0.70, Recalculated from raw text 'Total: 2380.00 EUR' and 'Prices incl. VAT' instruction with tax rate 0.19.)"
+    ],
+    "requiresHumanReview": true,
+    "reasoning": "This is the first invoice processed for 'Parts AG', so there are no past human-approved corrections for this vendor to leverage for high confidence. The suggested corrections for 'grossTotal' and 'taxTotal' are derived from reconciling the raw text 'Total: 2380.00 EUR' and the 'Prices incl. VAT (MwSt. inkl.)' instruction with the extracted 'taxRate' of 0.19. As this represents a new pattern for this vendor, human review is required. | First time processing invoice from this vendor → requires human review to establish reliable learned pattern.",
+    "confidenceScore": 0.71,
+    "memoryUpdates": [
+      "Learned 2 correction(s) for INV-B-001"
+    ],
+    "auditTrail": [
+      {
+        "step": "recall",
+        "timestamp": "2025-12-27T15:08:24.383Z",
+        "details": "Loaded past human reviews for learned memory"
+      },
+      {
+        "step": "decide",
+        "timestamp": "2025-12-27T15:08:36.214Z",
+        "details": "Vendor memory exists: false | Final confidence: 0.71 | Human review: true"
+      }
+    ]
+  },
+  {
+    "normalizedInvoice": {
+      "invoiceId": "INV-B-002",
+      "vendor": "Parts AG",
+      "fields": {
+        "invoiceNumber": "PA-7799",
+        "invoiceDate": "20-02-2024",
+        "currency": "EUR",
+        "poNumber": "PO-B-110",
+        "netTotal": 1500,
+        "taxRate": 0.19,
+        "taxTotal": 285,
+        "grossTotal": 1785,
+        "lineItems": [
+          {
+            "sku": "BOLT-99",
+            "description": "Bolts",
+            "qty": 150,
+            "unitPrice": 10
+          }
+        ]
+      },
+      "confidence": 0.86,
+      "rawText": "Invoice No: PA-7799\nPO: PO-B-110\nMwSt. inkl.\n..."
+    },
+    "proposedCorrections": [
+      "grossTotal → 1500 (conf: 0.75, Recalculated based on 'MwSt. inkl.' in raw text, assuming line item unitPrice is gross. Requires human review as this is a new calculation pattern for this vendor.)",
+      "netTotal → 1260.5 (conf: 0.75, Recalculated based on 'MwSt. inkl.' in raw text, assuming line item unitPrice is gross. Requires human review as this is a new calculation pattern for this vendor.)",
+      "taxTotal → 239.5 (conf: 0.75, Recalculated based on 'MwSt. inkl.' in raw text, assuming line item unitPrice is gross. Requires human review as this is a new calculation pattern for this vendor.)"
+    ],
+    "requiresHumanReview": true,
+    "reasoning": "The raw text contains 'MwSt. inkl.', indicating that VAT is included in the prices. The extracted line item unitPrice (10) was assumed to be gross. Based on this, grossTotal was recalculated as 150 * 10 = 1500. Subsequently, netTotal (1500 / 1.19 = 1260.50) and taxTotal (1500 - 1260.50 = 239.50) were derived. While grossTotal and taxTotal have been corrected for 'Parts AG' in the past, the specific application of 'MwSt. inkl.' logic for recalculation is a new pattern for this vendor, and netTotal is a new field correction. Therefore, confidence is set to 0.75, and human review is required. | Confidence not sufficient yet → requires human verification.",
+    "confidenceScore": 0.76,
+    "memoryUpdates": [
+      "Learned 3 correction(s) for INV-B-002"
+    ],
+    "auditTrail": [
+      {
+        "step": "recall",
+        "timestamp": "2025-12-27T15:09:41.498Z",
+        "details": "Loaded past human reviews for learned memory"
+      },
+      {
+        "step": "decide",
+        "timestamp": "2025-12-27T15:09:57.401Z",
+        "details": "Vendor memory exists: true | Final confidence: 0.76 | Human review: true"
+      }
+    ]
+  },
+  {
+    "normalizedInvoice": {
+      "invoiceId": "INV-B-003",
+      "vendor": "Parts AG",
+      "fields": {
+        "invoiceNumber": "PA-7810",
+        "invoiceDate": "03-03-2024",
+        "currency": null,
+        "poNumber": "PO-B-111",
+        "netTotal": 1000,
+        "taxRate": 0.19,
+        "taxTotal": 190,
+        "grossTotal": 1190,
+        "lineItems": [
+          {
+            "sku": "NUT-10",
+            "description": "Nuts",
+            "qty": 500,
+            "unitPrice": 2
+          }
+        ]
+      },
+      "confidence": 0.66,
+      "rawText": "Invoice No: PA-7810\nPO: PO-B-111\nCurrency: EUR\n..."
+    },
+    "proposedCorrections": [
+      "currency → \"EUR\" (conf: 0.70, Currency 'EUR' found in raw text for a missing field. This is a new pattern for this vendor.)"
+    ],
+    "requiresHumanReview": true,
+    "reasoning": "The 'currency' field was missing from the extracted data but clearly present in the raw text as 'Currency: EUR'. This is a direct extraction, but since it's the first time this specific correction pattern (filling a missing currency from raw text) is applied for 'Parts AG', a low confidence (0.7) is assigned, requiring human review. The 'poNumber' was correctly extracted and validated against reference data with a single match, so no correction is needed. The 'netTotal', 'taxTotal', and 'grossTotal' are mathematically consistent with the line items and tax rate, thus no corrections are suggested for these fields, even though past corrections for 'Parts AG' involved these fields, those were for different discrepancies. | Confidence not sufficient yet → requires human verification.",
+    "confidenceScore": 0.68,
+    "memoryUpdates": [
+      "Learned 1 correction(s) for INV-B-003"
+    ],
+    "auditTrail": [
+      {
+        "step": "recall",
+        "timestamp": "2025-12-27T15:10:18.682Z",
+        "details": "Loaded past human reviews for learned memory"
+      },
+      {
+        "step": "decide",
+        "timestamp": "2025-12-27T15:10:28.702Z",
+        "details": "Vendor memory exists: true | Final confidence: 0.68 | Human review: true"
+      }
+    ]
+  },
+  {
+    "normalizedInvoice": {
+      "invoiceId": "INV-B-004",
+      "vendor": "Parts AG",
+      "fields": {
+        "invoiceNumber": "PA-7810",
+        "invoiceDate": "04-03-2024",
+        "currency": "EUR",
+        "poNumber": "PO-B-111",
+        "netTotal": 1000,
+        "taxRate": 0.19,
+        "taxTotal": 190,
+        "grossTotal": 1190,
+        "lineItems": [
+          {
+            "sku": "NUT-10",
+            "description": "Nuts",
+            "qty": 500,
+            "unitPrice": 2
+          }
+        ]
+      },
+      "confidence": 0.61,
+      "rawText": "Duplicate submission of PA-7810\n..."
+    },
+    "proposedCorrections": [
+      "invoiceStatus → \"possible_duplicate\" (conf: 0.70, Detected 'Duplicate submission' in the raw text. This is a new pattern for Parts AG.)"
+    ],
+    "requiresHumanReview": true,
+    "reasoning": "The suggestion for 'invoiceStatus' as 'possible_duplicate' is based on the raw text 'Duplicate submission of PA-7810'. This is the first time this specific correction (flagging an invoice as a possible duplicate) is being applied for the vendor 'Parts AG'. According to the core rules, new patterns or first-time corrections for a vendor receive low confidence and require human review. No other fields required correction based on the provided data and rules. | Confidence not sufficient yet → requires human verification.",
+    "confidenceScore": 0.66,
+    "memoryUpdates": [
+      "Learned 1 correction(s) for INV-B-004"
+    ],
+    "auditTrail": [
+      {
+        "step": "recall",
+        "timestamp": "2025-12-27T15:10:50.018Z",
+        "details": "Loaded past human reviews for learned memory"
+      },
+      {
+        "step": "decide",
+        "timestamp": "2025-12-27T15:10:59.311Z",
+        "details": "Vendor memory exists: true | Final confidence: 0.66 | Human review: true"
+      }
+    ]
+  },
+  {
+    "normalizedInvoice": {
+      "invoiceId": "INV-C-001",
+      "vendor": "Freight & Co",
+      "fields": {
+        "invoiceNumber": "FC-1001",
+        "invoiceDate": "01.03.2024",
+        "currency": "EUR",
+        "poNumber": "PO-C-900",
+        "netTotal": 1000,
+        "taxRate": 0.19,
+        "taxTotal": 190,
+        "grossTotal": 1190,
+        "lineItems": [
+          {
+            "sku": null,
+            "description": "Transport charges",
+            "qty": 1,
+            "unitPrice": 1000
+          }
+        ]
+      },
+      "confidence": 0.79,
+      "rawText": "Invoice: FC-1001\nPO: PO-C-900\n2% Skonto if paid within 10 days\n..."
+    },
+    "proposedCorrections": [
+      "discountTerms → \"2% Skonto if paid within 10 days\" (conf: 0.75, Extracted discount terms from raw text based on 'Skonto' keyword. This is a new pattern for this vendor.)",
+      "lineItems[0].sku → \"FREIGHT\" (conf: 0.75, Matched line item description 'Transport charges' to known SKU 'FREIGHT' from reference Purchase Order PO-C-900 for this vendor. This is a new pattern for this vendor.)"
+    ],
+    "requiresHumanReview": true,
+    "reasoning": "All suggestions are for a new vendor (Freight & Co) for which no past human-approved corrections exist. Therefore, these are considered new patterns or first-time suggestions for this vendor, resulting in low confidence and requiring human review. | First time processing invoice from this vendor → requires human review to establish reliable learned pattern.",
+    "confidenceScore": 0.76,
+    "memoryUpdates": [
+      "Learned 2 correction(s) for INV-C-001"
+    ],
+    "auditTrail": [
+      {
+        "step": "recall",
+        "timestamp": "2025-12-27T15:11:12.234Z",
+        "details": "Loaded past human reviews for learned memory"
+      },
+      {
+        "step": "decide",
+        "timestamp": "2025-12-27T15:11:18.066Z",
+        "details": "Vendor memory exists: false | Final confidence: 0.76 | Human review: true"
+      }
+    ]
+  },
+  {
+    "normalizedInvoice": {
+      "invoiceId": "INV-C-002",
+      "vendor": "Freight & Co",
+      "fields": {
+        "invoiceNumber": "FC-1002",
+        "invoiceDate": "10.03.2024",
+        "currency": "EUR",
+        "poNumber": "PO-C-900",
+        "netTotal": 1000,
+        "taxRate": 0.19,
+        "taxTotal": 190,
+        "grossTotal": 1190,
+        "lineItems": [
+          {
+            "sku": null,
+            "description": "Seefracht / Shipping",
+            "qty": 1,
+            "unitPrice": 1000
+          }
+        ]
+      },
+      "confidence": 0.73,
+      "rawText": "Invoice: FC-1002\nPO: PO-C-900\nService: Seefracht\n..."
+    },
+    "proposedCorrections": [
+      "lineItems[0].sku → \"FREIGHT\" (conf: 0.90, SKU identified from description 'Seefracht / Shipping' based on an exact match with a past human-approved correction for this vendor (INV-C-001).)"
+    ],
+    "requiresHumanReview": false,
+    "reasoning": "The suggestion for 'lineItems[0].sku' has high confidence (0.9) because the pattern (setting SKU to 'FREIGHT' for descriptions like 'Seefracht / Shipping') exactly matches a human-approved correction for 'Freight & Co' on invoice INV-C-001. No other corrections are suggested as the raw text does not contain information for 'discountTerms' (despite a past correction for this vendor, the trigger text 'Skonto' is missing), and other extracted fields appear correct and consistent with reference data. | Learned pattern from past human corrections for this vendor + high confidence → auto-approved.",
+    "confidenceScore": 0.81,
+    "memoryUpdates": [],
+    "auditTrail": [
+      {
+        "step": "recall",
+        "timestamp": "2025-12-27T15:11:44.327Z",
+        "details": "Loaded past human reviews for learned memory"
+      },
+      {
+        "step": "apply",
+        "timestamp": "2025-12-27T15:11:52.415Z",
+        "details": "Auto-applied lineItems[0].sku = \"FREIGHT\" (conf 0.90)"
+      },
+      {
+        "step": "decide",
+        "timestamp": "2025-12-27T15:11:52.415Z",
+        "details": "Vendor memory exists: true | Final confidence: 0.81 | Human review: false"
+      }
+    ]
+  },
+  {
+    "normalizedInvoice": {
+      "invoiceId": "INV-C-003",
+      "vendor": "Freight & Co",
+      "fields": {
+        "invoiceNumber": "FC-1003",
+        "invoiceDate": "20.03.2024",
+        "currency": "EUR",
+        "poNumber": "PO-C-901",
+        "netTotal": 1020,
+        "taxRate": 0.19,
+        "taxTotal": 193.8,
+        "grossTotal": 1213.8,
+        "lineItems": [
+          {
+            "sku": null,
+            "description": "Transport charges",
+            "qty": 1,
+            "unitPrice": 1020
+          }
+        ]
+      },
+      "confidence": 0.77,
+      "rawText": "Invoice: FC-1003\nPO: PO-C-901\nSlight fuel surcharge applied\n..."
+    },
+    "proposedCorrections": [
+      "lineItems[0].sku → \"FREIGHT\" (conf: 0.95, Corrected SKU based on past human-approved correction for this vendor (INV-C-001) and matching description 'Transport charges' to 'Transport' rule.)"
+    ],
+    "requiresHumanReview": false,
+    "reasoning": "The suggestion for 'lineItems[0].sku' has high confidence because it exactly matches a human-approved correction for 'Freight & Co' (from INV-C-001) where the 'sku' was null and the description was related to transport. The current invoice's line item description 'Transport charges' aligns with the 'FREIGHT' SKU rule. No other fields required correction or had sufficient evidence for a confident suggestion based on past corrections or reference data. | Learned pattern from past human corrections for this vendor + high confidence → auto-approved.",
+    "confidenceScore": 0.86,
+    "memoryUpdates": [],
+    "auditTrail": [
+      {
+        "step": "recall",
+        "timestamp": "2025-12-27T15:11:52.416Z",
+        "details": "Loaded past human reviews for learned memory"
+      },
+      {
+        "step": "apply",
+        "timestamp": "2025-12-27T15:12:01.054Z",
+        "details": "Auto-applied lineItems[0].sku = \"FREIGHT\" (conf 0.95)"
+      },
+      {
+        "step": "decide",
+        "timestamp": "2025-12-27T15:12:01.054Z",
+        "details": "Vendor memory exists: true | Final confidence: 0.86 | Human review: false"
+      }
+    ]
+  },
+  {
+    "normalizedInvoice": {
+      "invoiceId": "INV-C-004",
+      "vendor": "Freight & Co",
+      "fields": {
+        "invoiceNumber": "FC-1004",
+        "invoiceDate": "28.03.2024",
+        "currency": "EUR",
+        "poNumber": "PO-C-901",
+        "netTotal": 1020,
+        "taxRate": 0.19,
+        "taxTotal": 193.8,
+        "grossTotal": 1213.8,
+        "lineItems": [
+          {
+            "sku": null,
+            "description": "Transport charges",
+            "qty": 1,
+            "unitPrice": 1020
+          }
+        ]
+      },
+      "confidence": 0.58,
+      "rawText": "Invoice: FC-1004\nPO: PO-C-901\nNote: delivery confirmation pending\n..."
+    },
+    "proposedCorrections": [
+      "lineItems[0].sku → \"FREIGHT\" (conf: 0.95, The line item description 'Transport charges' matches the pattern for SKU 'FREIGHT' as per detection rules. This correction also exactly matches a past human-approved correction for this vendor (Invoice INV-C-001).)"
+    ],
+    "requiresHumanReview": true,
+    "reasoning": "The suggestion for 'lineItems[0].sku' has high confidence (0.95) because it exactly matches a pattern previously approved by a human for 'Freight & Co' (Invoice INV-C-001) and aligns with a specific detection rule. No human review is required for this suggestion. | Confidence not sufficient yet → requires human verification.",
+    "confidenceScore": 0.76,
+    "memoryUpdates": [
+      "Learned 1 correction(s) for INV-C-004"
+    ],
+    "auditTrail": [
+      {
+        "step": "recall",
+        "timestamp": "2025-12-27T15:12:01.054Z",
+        "details": "Loaded past human reviews for learned memory"
+      },
+      {
+        "step": "apply",
+        "timestamp": "2025-12-27T15:12:09.900Z",
+        "details": "Auto-applied lineItems[0].sku = \"FREIGHT\" (conf 0.95)"
+      },
+      {
+        "step": "decide",
+        "timestamp": "2025-12-27T15:12:09.900Z",
+        "details": "Vendor memory exists: true | Final confidence: 0.76 | Human review: true"
+      }
+    ]
+  }
+]
